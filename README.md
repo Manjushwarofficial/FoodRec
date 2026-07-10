@@ -1,19 +1,19 @@
 # FoodRec 
 Restaurant Recommendation Engine using Neural Collaborative Filtering
 
-A deep learning–based recommendation system that predicts which restaurants a user is most likely to engage with, trained on **implicit feedback** (real user-restaurant interactions) rather than explicit ratings — mirroring how production recommender systems at food-delivery platforms like Swiggy, Zomato, and DoorDash actually operate.
+A deep learning–based recommendation system that predicts which restaurants a user is most likely to engage with, trained on **implicit feedback** (real user to restaurant interactions) rather than explicit ratings; mirroring how production recommender systems at food-delivery platforms like Swiggy, Zomato, and DoorDash actually operate.
 
 
 ## Why this project
 
-Most recommender system tutorials use explicit rating data (e.g., 1–5 stars) and assume it's dense and reliable. In practice, most production systems — especially in food delivery, e-commerce, and content platforms — face **sparse, implicit signals**: a user either engaged with an item (ordered, clicked, viewed) or didn't. This project is built around that realistic constraint.
+Most recommender system tutorials use explicit rating data (e.g., 1–5 stars) and assume it's dense and reliable. In practice, most production systems; especially in food delivery, e-commerce, and content platforms; face **sparse, implicit signals**: a user either engaged with an item (ordered, clicked, viewed) or didn't. This project is built around that realistic constraint.
 
 Instead of relying on a pretrained model, the recommendation model here — **Neural Collaborative Filtering (NCF)** — is trained from scratch, learning user and item embeddings purely from interaction data.
 
 
 ## Problem Statement
 
-Given a user and a catalog of restaurants, predict a ranked list of restaurants the user is most likely to want to order from — using only implicit interaction history (no explicit ratings assumed).
+Given a user and a catalog of restaurants, predict a ranked list of restaurants the user is most likely to want to order from, using only implicit interaction history.
 
 
 ## Dataset
@@ -40,7 +40,7 @@ User ID ──► Embedding Layer ─┐
 Item ID ──► Embedding Layer ─┘
 ```
 
-- **User & Item Embeddings**: learned dense vector representations (latent factors), initialized randomly and trained end-to-end — no pretrained embeddings used.
+- **User & Item Embeddings**: learned dense vector representations (latent factors), initialized randomly and trained end-to-end; no pretrained embeddings used.
 - **MLP layers**: capture non-linear interactions between user and item embeddings, generalizing beyond simple matrix factorization (dot product).
 - **Output**: probability that a user would engage with a given restaurant.
 - **Loss function**: Binary Cross-Entropy (implicit feedback framed as binary classification: interacted vs. not).
