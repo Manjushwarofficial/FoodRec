@@ -41,8 +41,8 @@ Given a user and a catalog of restaurants, predict a ranked list of restaurants 
 ## Model Architecture — Neural Collaborative Filtering (NCF)
 
 ```text
-User ID ──► User Embedding ─┐
-                            ├─► Concatenate ──► MLP (64 → 32 → 1) ──► Sigmoid ──► Probability
+User ID ──► User Embedding ─────┐
+                                ├─► Concatenate ──► MLP (64 → 32 → 1) ──► Sigmoid ──► Probability
 Business ID ──► Item Embedding ─┘
 ```
 
@@ -63,10 +63,8 @@ Since this is a ranking problem, standard classification accuracy is not meaning
 
 | Model | Hit Rate@10 | NDCG@10 |
 |---|---|---|
-| Popularity Baseline | TBD | TBD |
-| Neural Collaborative Filtering | TBD | TBD |
-
-*(Results to be filled in after training.)*
+| Popularity Baseline | 0.529303 | 0.330189 |
+| Neural Collaborative Filtering | 0.427103 | 0.245820 |
 
 
 ## Handling the Cold-Start Problem
@@ -80,10 +78,10 @@ New users/restaurants have no learned embedding at inference time. This system f
 |---|---|
 | Model training | PyTorch |
 | Data processing | Pandas, NumPy |
-| API serving | FastAPI |
-| Frontend/demo | Streamlit |
-| Deployment | AWS Lambda / EC2, API Gateway, S3, CloudFront |
-| Storage | Amazon S3 (model artifacts, processed data) |
+| API serving | Flask |
+| Frontend/demo | HTML, CSS Framework |
+| Deployment | AWS EC2, API Gateway |
+| Storage | Amazon EC2 Virtual Machine (Instances) |
 
 
 ## Project Structure
@@ -156,10 +154,16 @@ python app.py
 - Cold-start problem and hybrid fallback strategies
 - Production considerations: baseline comparison, latency vs. accuracy tradeoffs, scaling recommendation serving
 
+## Hypothesis
+
+The gap between the neural CF model and the popularity baseline (0.4290 vs 0.5293), even after fixing the sparsity issue, may not signal a pipeline flaw. It could instead reflect a known finding in recommender systems research: many neural CF models fail to beat well tuned simple baselines under fair evaluation. Dacrema et al. (2019), "Are We Really Making Much Progress?", showed popularity baselines can be deceptively strong, especially under the 1 positive vs 99 random negatives protocol used here.
+
+This would be supported if the gap holds across different seeds and resampled negatives, and if the baseline is genuinely well tuned rather than a weak strawman. If so, the result likely reflects a real limitation of neural CF under this setup, not a bug.
+
 
 ## Future Improvements
 
-- Incorporate restaurant metadata (cuisine, price, location) as side features for a hybrid content + collaborative model
+- Incorporate restaurant metadata (price, location) as side features for a hybrid content + collaborative model
 - Add approximate nearest neighbor search (e.g., FAISS) for scaling to large item catalogs
 - Experiment with sequence-aware recommendation (recent order history) using a lightweight sequential model
 
