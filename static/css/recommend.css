@@ -1,0 +1,156 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f7f8fa;
+}
+
+.hero {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    padding: 80px 60px;
+}
+
+.page-image {
+    flex: 1;
+    min-height: 100vh;
+    background-image: url("image_1.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    letter-spacing: 2px;
+    color: #FC8019;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.tagline {
+    font-family: 'Space Grotesk', sans-serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 22px;
+    color: #1a1a1a;
+    padding-bottom: 16px;
+    border-bottom: 3px solid #FC8019;
+    display: inline-block;
+    margin-bottom: 40px;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+form label {
+    font-size: 14px;
+    color: #555;
+}
+
+form select {
+    font-family: 'Poppins', sans-serif;
+    padding: 10px 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 30px;
+    font-size: 14px;
+    background: #fff;
+}
+
+form button {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 32px;
+    border: none;
+    border-radius: 30px;
+    background: #FC8019;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+form button:hover {
+    background: #e0730f;
+}
+
+.results-section {
+    padding: 60px;
+}
+
+h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+thead {
+    background: #FC8019;
+}
+
+thead th {
+    color: #fff;
+    text-align: left;
+    padding: 14px 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody td {
+    padding: 14px 20px;
+    font-size: 15px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.no-results {
+    padding: 0 60px 40px;
+    font-size: 15px;
+    color: #555;
+}
+
+.model-blurb {
+    margin-top: 32px;
+    max-width: 480px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #555;
+}
+
+@media (max-width: 800px) {
+    .hero { flex-direction: column; }
+    .page-image { min-height: 40vh; order: -1; }
+    .page-content { padding: 40px 30px; }
+    .results-section { padding: 30px; }
+}

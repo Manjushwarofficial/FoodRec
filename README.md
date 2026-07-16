@@ -27,23 +27,24 @@ Given a user and a catalog of restaurants, predict a ranked list of restaurants 
 | `yelp_academic_dataset_user.json` | User metadata |
 
 **Implicit feedback construction:**
-- A review by `user_id` for `business_id` is treated as a **positive interaction** (engagement), regardless of star rating — reflecting the reality that food-delivery platforms track *orders*, not ratings, as the primary signal.
+- A review and tip by `user_id` for `business_id` is treated as a **positive interaction** (engagement), regardless of star rating — reflecting the reality that food-delivery platforms track *orders*, not ratings, as the primary signal.
 - **Negative sampling**: for each positive interaction, a small number of restaurants the user never reviewed are randomly sampled as negatives, following standard practice for implicit-feedback recommender training.
 - Dataset is filtered to a subset of cities/categories (restaurants only) to keep training tractable on a single machine.
 
 
 ## Model Architecture — Neural Collaborative Filtering (NCF)
 
-```
-User ID ──► Embedding Layer ─┐
-                              ├─► Concatenate ──► MLP (Dense + ReLU layers) ──► Sigmoid ──► Interaction Score
-Item ID ──► Embedding Layer ─┘
+```text
+User ID ──► User Embedding ─┐
+                            ├─► Concatenate ──► MLP (64 → 32 → 1) ──► Sigmoid ──► Probability
+Business ID ──► Item Embedding ─┘
 ```
 
-- **User & Item Embeddings**: learned dense vector representations (latent factors), initialized randomly and trained end-to-end; no pretrained embeddings used.
-- **MLP layers**: capture non-linear interactions between user and item embeddings, generalizing beyond simple matrix factorization (dot product).
-- **Output**: probability that a user would engage with a given restaurant.
-- **Loss function**: Binary Cross-Entropy (implicit feedback framed as binary classification: interacted vs. not).
+- **User and item embeddings**: learned dense vectors for each user and restaurant, initialized randomly and optimized during training.
+- **MLP head**: combines the two embeddings through a small multi-layer perceptron with ReLU activations to learn non-linear interactions.
+- **Output**: a score between 0 and 1 representing the likelihood that a user will engage with a restaurant.
+- **Training setup**: the model is trained with binary cross-entropy loss on implicit feedback pairs built from reviews and tips.
+- **Sampling strategy**: each positive interaction is paired with random negative samples so the model learns to distinguish observed from unobserved interactions.
 
 
 ## Evaluation
@@ -81,24 +82,35 @@ New users/restaurants have no learned embedding at inference time. This system f
 
 ## Project Structure
 
-```
-foodrec/
-├── data/
-│   ├── raw/                  # Yelp raw JSON files (not committed)
-│   └── processed/            # Cleaned interaction tables
-├── notebooks/
-│   └── eda.ipynb             # Exploratory data analysis
-├── src/
-│   ├── preprocess.py         # Builds (user, item, label) triples + negative sampling
-│   ├── dataset.py            # PyTorch Dataset/DataLoader
-│   ├── model.py              # NCF model definition
-│   ├── train.py              # Training loop
-│   ├── evaluate.py           # Hit Rate@K, NDCG@K, baseline comparison
-│   └── recommend.py          # Inference: top-N recommendations for a user
+```text
+FoodRec/
+├── app.py                    # Main Flask app entry point
 ├── api/
-│   └── main.py                # FastAPI app exposing /recommend/{user_id}
+│   └── main.py               # FastAPI service for recommendation endpoints
 ├── app/
-│   └── streamlit_app.py       # Demo interface
+│   └── streamlit_app.py      # Streamlit demo interface
+├── assets/
+├── data/
+│   ├── features/             # Feature-mapped IDs and metadata tables
+│   ├── interim/              # Intermediate preprocessing outputs
+│   ├── processed/            # Cleaned business, review, user, and tip data
+│   └── raw/
+│       └── yelp_json/        # Yelp raw JSON datasets
+├── models/
+│   └── ncf_model.pt          # Trained neural collaborative filtering model
+├── notebooks/
+│   ├── 01_data_loading.ipynb
+│   ├── 02_eda.ipynb
+│   ├── 03_preprocessing.ipynb
+│   ├── 04_feature_engineering.ipynb
+│   └── 05_ncf_model.ipynb
+├── src/
+│   └── recommend.py          # Recommendation inference logic
+├── static/
+│   └── css/                  # Frontend stylesheets
+├── templates/
+│   ├── index.html
+│   └── recommend.html
 ├── requirements.txt
 └── README.md
 ```
@@ -107,34 +119,24 @@ foodrec/
 ## How to Run Locally
 
 ```bash
-# 1. Clone repo and install dependencies
-git clone <repo-url>
-cd foodrec
+# 1. Clone the repository and install dependencies
+git clone https://github.com/Manjushwarofficial/FoodRec.git
+cd FoodRec
 pip install -r requirements.txt
 
-# 2. Preprocess data (constructs implicit interaction dataset)
-python src/preprocess.py
+# 2. Run the main Flask web app
+python app.py
 
-# 3. Train the model
-python src/train.py
-
-# 4. Evaluate against baseline
-python src/evaluate.py
-
-# 5. Run the API
-uvicorn api.main:app --reload
-
-# 6. Run the demo interface
-streamlit run app/streamlit_app.py
 ```
 
+> The main user-facing app is the Flask interface in app.py. 
 
 ## AWS Deployment
 
 | Component | Service |
 |---|---|
-| Model inference | AWS Lambda (or EC2 for larger models) |
-| API | Amazon API Gateway → Lambda |
+| Model inference | AWS EC2 |
+| API | Amazon API Gateway → EC2 |
 | Frontend | Amazon S3 (static hosting) + CloudFront |
 | Model & data storage | Amazon S3 |
 

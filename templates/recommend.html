@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FoodRec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/recommend.css') }}">
+</head>
+<body>
+    <div class="hero">
+        <div class="page-content">
+            <h1>Food Rec</h1>
+            <p class="tagline">Discover your next favourite spot!</p>
+
+            <form action="/recommend" method="POST">
+                <label for="user_id">Who are you?</label>
+                <select name="user_id" id="user_id">
+                    <option value="guest">Guest (popular picks)</option>
+                    {% for user in users %}
+                    <option value="{{ user.user_id }}">{{ user.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="cuisine">Cuisine:</label>
+                <select name="cuisine" id="cuisine">
+                    <option value="">Any</option>
+                    <option value="italian">Italian</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="indian">Indian</option>
+                    <option value="mexican">Mexican</option>
+                    <option value="japanese">Japanese</option>
+                </select>
+
+                <button type="submit">Get Recommendations</button>
+            </form>
+            <p class="model-blurb">
+                This model (trained on intrinsic signals) predicts the top 10 restaurants
+                given a user profile — similar to how Zomato's and Yelp's recommendation
+                algorithms work.
+            </p>
+        </div>
+
+        <div class="page-image"></div>
+    </div>
+
+    {% if recommendations %}
+    <div id="results" class="results-section">
+        <h2>Recommended for you:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Categories</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recommendations %}
+                <tr>
+                    <td>{{ r.name }}</td>
+                    <td>{{ r.city }}</td>
+                    <td>{{ r.categories }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    </script>
+    {% elif searched %}
+    <p class="no-results">No matches found. Try a different cuisine.</p>
+    {% endif %}
+</body>
+</html>
