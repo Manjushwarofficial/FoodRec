@@ -3,6 +3,12 @@ Restaurant Recommendation Engine using Neural Collaborative Filtering
 
 A deep learning–based recommendation system that predicts which restaurants a user is most likely to engage with, trained on **implicit feedback** (real user to restaurant interactions) rather than explicit ratings; mirroring how production recommender systems at food-delivery platforms like Swiggy, Zomato, and DoorDash actually operate.
 
+# Interface Screenshots
+
+<img width="1276" height="708" alt="Screenshot 2026-07-16 at 2 39 18 PM" src="https://github.com/user-attachments/assets/c00ff815-d599-4f10-8db9-780cf479f2ca" />
+<img width="1278" height="710" alt="Screenshot 2026-07-16 at 2 39 41 PM" src="https://github.com/user-attachments/assets/6259b3ad-5b73-426d-8ea5-a42ba1f2a9b3" />
+<img width="1279" height="712" alt="Screenshot 2026-07-16 at 2 39 55 PM" src="https://github.com/user-attachments/assets/36ee93c7-1a83-498b-a8d2-8c8de58787a0" />
+
 
 ## Why this project
 
